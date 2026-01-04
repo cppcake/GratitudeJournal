@@ -20,9 +20,6 @@
       "description": "Operations about journaling"
     }
   ],
-  "schemes": [
-    "http"
-  ],
   "paths": {
     "/user/{userName}": {
       "get": {
@@ -57,6 +54,33 @@
             "description": "User not found"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Removes an already existing user",
+        "description": "",
+        "operationId": "removeUser",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User removed successfully"
+          },
+          "400": {
+            "description": "userName malformed"
+          },
+          "403": {
+            "description": "User does not exist"
+          }
+        }
       }
     },
     "/user": {
@@ -68,32 +92,20 @@
         "description": "",
         "operationId": "createUser",
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "userName",
-            "in": "formData",
-            "description": "The unique user name of the user to create",
+            "in": "body",
+            "name": "body",
+            "description": "Created user object",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "firstName",
-            "in": "formData",
-            "description": "The first name of the user to create",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "lastName",
-            "in": "formData",
-            "description": "The last name of the user to create",
-            "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/NewUser"
+            }
           }
         ],
         "responses": {
@@ -113,28 +125,23 @@
           "user"
         ],
         "summary": "Update an existing user",
-        "description": "Update any parameter except the userName and userId.",
+        "description": "Update any User variable except the userName and userId.",
         "operationId": "updateUser",
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "firstName",
-            "in": "formData",
-            "description": "The new first name of the user to update",
+            "in": "body",
+            "name": "body",
+            "description": "Updated user object",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "lastName",
-            "in": "formData",
-            "description": "The new last name of the user to update",
-            "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/NewUser"
+            }
           }
         ],
         "responses": {
@@ -143,39 +150,6 @@
           },
           "400": {
             "description": "Parameters malformed"
-          },
-          "403": {
-            "description": "User does not exist"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Removes an already existing user",
-        "description": "",
-        "operationId": "removeUser",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "userName",
-            "in": "formData",
-            "description": "The userName of the user to remove",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User removed successfully"
-          },
-          "400": {
-            "description": "userName malformed"
           },
           "403": {
             "description": "User does not exist"
@@ -202,6 +176,25 @@
           "type": "string"
         }
       }
+    },
+    "NewUser": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "userName",
+        "firstName",
+        "lastName"
+      ]
     }
   }
 }
