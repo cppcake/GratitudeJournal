@@ -1,5 +1,8 @@
 package com.example.gratidude_journal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +11,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration(proxyBeanMethods = false)
 class TestcontainersConfiguration {
+	private static final Logger log = LoggerFactory.getLogger(TestcontainersConfiguration.class);
 
 	@Bean
 	@ServiceConnection
@@ -15,4 +19,13 @@ class TestcontainersConfiguration {
 		return new MySQLContainer(DockerImageName.parse("mysql:latest"));
 	}
 
+	@Bean
+	CommandLineRunner testcontainersConfiguration(UserRepository repository) {
+		return args -> {
+			repository.deleteAll();
+			log.info("Preloading " + repository.save(new User("test1UserName", "test1FirstName", "test1LastName")));
+			log.info("Preloading " + repository.save(new User("test2UserName", "test2FirstName", "test2LastName")));
+			log.info("Preloading " + repository.save(new User("test3UserName", "test3FirstName", "test3LastName")));
+		};
+	}
 }
