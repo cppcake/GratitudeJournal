@@ -1,4 +1,4 @@
-package com.example.gratidude_journal;
+package com.example.gratidude_journal.user;
 
 public record UserDTO(String userName,
                 String firstName,

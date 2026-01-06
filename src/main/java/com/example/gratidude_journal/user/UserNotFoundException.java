@@ -1,4 +1,4 @@
-package com.example.gratidude_journal;
+package com.example.gratidude_journal.user;
 
 class UserNotFoundException extends RuntimeException {
 

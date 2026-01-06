@@ -1,4 +1,4 @@
-package com.example.gratidude_journal;
+package com.example.gratidude_journal.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

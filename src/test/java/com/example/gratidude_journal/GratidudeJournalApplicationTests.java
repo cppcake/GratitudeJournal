@@ -11,6 +11,9 @@ import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.client.RestTestClient.ResponseSpec;
 
+import com.example.gratidude_journal.user.User;
+import com.example.gratidude_journal.user.UserDTO;
+
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient

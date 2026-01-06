@@ -1,4 +1,4 @@
-package com.example.gratidude_journal;
+package com.example.gratidude_journal.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,15 @@ import org.springframework.hateoas.RepresentationModel;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
-class UserController {
+public class UserController {
     private final UserRepository repository;
 
-    UserController(UserRepository repository) {
+    public UserController(UserRepository repository) {
         this.repository = repository;
     }
 
     @GetMapping("/user/{userName}")
-    EntityModel<User> getUserByUserName(@PathVariable String userName) {
+    public EntityModel<User> getUserByUserName(@PathVariable String userName) {
         if (!User.validateName(userName))
             throw new NameInvalidException(userName);
 
@@ -40,7 +40,7 @@ class UserController {
     }
 
     @DeleteMapping("/user/{userName}")
-    ResponseEntity<RepresentationModel<?>> deleteUserByUserName(@PathVariable String userName) {
+    public ResponseEntity<RepresentationModel<?>> deleteUserByUserName(@PathVariable String userName) {
         if (!User.validateName(userName))
             throw new NameInvalidException(userName);
 
@@ -59,7 +59,7 @@ class UserController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    EntityModel<User> createUser(@RequestBody User newUser) {
+    public EntityModel<User> createUser(@RequestBody User newUser) {
         if (repository.findByUserName(newUser.getUserName()).isPresent())
             throw new UserNameTakenException(newUser.getUserName());
 
@@ -73,7 +73,7 @@ class UserController {
     }
 
     @PutMapping("/user")
-    EntityModel<User> updateUser(@RequestBody User updatedUser) {
+    public EntityModel<User> updateUser(@RequestBody User updatedUser) {
         User user = repository.findByUserName(updatedUser.getUserName())
                 .map(foundUser -> {
                     foundUser.setFirstName(updatedUser.getFirstName());

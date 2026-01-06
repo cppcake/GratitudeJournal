@@ -1,4 +1,4 @@
-package com.example.gratidude_journal;
+package com.example.gratidude_journal.user;
 
 import java.util.Objects;
 
@@ -32,10 +32,10 @@ public class User {
         return validateName(userName) && validateName(firstName) && validateName(lastName);
     }
 
-    User() {
+    protected User() {
     }
 
-    User(String userName, String firstName, String lastName) {
+    public User(String userName, String firstName, String lastName) {
         this.setUserName(userName);
         this.setFirstName(firstName);
         this.setLastName(lastName);
