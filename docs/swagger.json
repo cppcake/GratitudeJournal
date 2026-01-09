@@ -156,6 +156,50 @@
           }
         }
       }
+    },
+    "/journal/{userName}": {
+      "post": {
+        "tags": [
+          "journaling"
+        ],
+        "summary": "Add a journal entry for a user.",
+        "description": "",
+        "operationId": "addEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Entry object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
+          },
+          "400": {
+            "description": "An entry already exists for today."
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -164,7 +208,9 @@
       "properties": {
         "userId": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 6
         },
         "userName": {
           "type": "string"
@@ -195,6 +241,28 @@
         "firstName",
         "lastName"
       ]
+    },
+    "JournalEntry": {
+      "type": "object",
+      "properties": {
+        "wellBeing": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "gratefullForToday": {
+          "type": "string"
+        },
+        "gratefullForTodayDescription": {
+          "type": "string"
+        },
+        "gratefullForInLife": {
+          "type": "string"
+        },
+        "gratefullForInLifeDescription": {
+          "type": "string"
+        }
+      },
+      "required": []
     }
   }
 }
