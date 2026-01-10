@@ -1,6 +1,5 @@
 package com.example.gratidude_journal.user;
 
-import com.example.gratidude_journal.journal.*;
 import com.example.gratidude_journal.user.exception.*;
 
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,9 @@ import org.springframework.hateoas.RepresentationModel;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+/*
+    Presentation Layer for User-API
+*/
 @RestController
 public class UserController {
     private final UserRepository repository;
@@ -90,16 +92,5 @@ public class UserController {
                 linkTo(methodOn(UserController.class).deleteUserByUserName(user.getUserName())).withRel("delete"),
                 linkTo(methodOn(UserController.class).updateUser(null)).withSelfRel(),
                 linkTo(methodOn(UserController.class).getUserByUserName(user.getUserName())).withRel("get"));
-    }
-
-    @PostMapping("/journaling/{userName}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addEntry(@PathVariable String userName, @RequestBody JournalEntry newEntry) {
-        repository.findByUserName(userName)
-                .map(foundUser -> {
-                    foundUser.addJournalEntry(newEntry);
-                    return repository.save(foundUser);
-                })
-                .orElseThrow(() -> new UserNotFoundException(userName));
     }
 }

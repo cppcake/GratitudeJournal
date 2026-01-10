@@ -13,6 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+/*
+    Part of the Persistence Layer for Journal-API
+*/
 @Entity
 public class JournalEntry {
     @Id

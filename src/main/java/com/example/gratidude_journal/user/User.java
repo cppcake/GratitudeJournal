@@ -15,6 +15,9 @@ import jakarta.persistence.Column;
 import com.example.gratidude_journal.journal.Journal;
 import com.example.gratidude_journal.journal.JournalEntry;
 
+/*
+    Part of the Persistence Layer for User-API
+*/
 @Entity
 public class User {
     private @Id @GeneratedValue Long userId;

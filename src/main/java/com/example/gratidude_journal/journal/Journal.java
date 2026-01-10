@@ -15,6 +15,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+/*
+    Part of the Persistence Layer for Journal-API
+*/
 @Entity
 public class Journal {
     @Column(name = "journal_id")
