@@ -13,7 +13,7 @@ import com.example.gratidude_journal.user.User;
 import com.example.gratidude_journal.user.UserRepository;
 
 @TestConfiguration(proxyBeanMethods = false)
-class TestcontainersConfiguration {
+public class TestcontainersConfiguration {
 	private static final Logger log = LoggerFactory.getLogger(TestcontainersConfiguration.class);
 
 	@Bean
