@@ -199,6 +199,33 @@
             "description": "User not found"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Get a list with date:journalEntryId pairs for a user.",
+        "description": "",
+        "operationId": "getEntries",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
       }
     }
   },
