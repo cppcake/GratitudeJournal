@@ -41,12 +41,26 @@ class JournalApiTest {
 	}
 
 	@Test
-	void addValidEntry() {
-		requestAddEntry("test1UserName", JournalEntry.WellBeing.GOOD, "Portal 2", "Great videogame", "Kurzgesagt",
-				"Makes Science even more awsome")
+	void addEntry() {
+		requestAddEntry("test1UserName", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+				"BBB")
 				.expectStatus().isCreated();
 
 		// journalService.getEntry("test1UserName",
 		// LocalDate.now()).getGratefullForToday().equals("Portal 2");
+	}
+
+	@Test
+	void addEntryThatDoesExist() {
+		requestAddEntry("test1UserName", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+				"BBB")
+				.expectStatus().isForbidden();
+	}
+
+	@Test
+	void addEntryForInvalidUser() {
+		requestAddEntry("thisUserDoesNotExist", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+				"BBB")
+				.expectStatus().isNotFound();
 	}
 }
