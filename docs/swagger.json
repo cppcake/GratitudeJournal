@@ -227,6 +227,74 @@
           }
         }
       }
+    },
+    "/journal/{journalId}": {
+      "put": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Update a journal entry.",
+        "description": "",
+        "operationId": "updateEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "journalId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Entry object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Delete a journal entry.",
+        "description": "",
+        "operationId": "deleteEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "journalId",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        }
+      }
     }
   },
   "definitions": {
