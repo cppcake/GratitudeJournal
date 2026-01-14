@@ -158,6 +158,33 @@
       }
     },
     "/journal/{userName}": {
+      "get": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Get a list with date:journalEntryId pairs for a user.",
+        "description": "",
+        "operationId": "getEntries",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
       "post": {
         "tags": [
           "journal"
@@ -194,33 +221,6 @@
           },
           "403": {
             "description": "An entry already exists for today."
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "journal"
-        ],
-        "summary": "Get a list with date:journalEntryId pairs for a user.",
-        "description": "",
-        "operationId": "getEntries",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "userName",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
           },
           "404": {
             "description": "User not found"
@@ -289,6 +289,36 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Get details about a journal Entry.",
+        "description": "",
+        "operationId": "getEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "journalEntryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
           },
           "404": {
             "description": "Entry not found"
