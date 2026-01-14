@@ -184,38 +184,6 @@
             "description": "User not found"
           }
         }
-      }
-    },
-    "/journal/entry/{journalEntryId}": {
-      "get": {
-        "tags": [
-          "journal"
-        ],
-        "summary": "Get details about a journal Entry.",
-        "description": "",
-        "operationId": "getEntry",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "journalEntryId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/JournalEntry"
-            }
-          },
-          "404": {
-            "description": "Entry not found"
-          }
-        }
       },
       "post": {
         "tags": [
@@ -256,6 +224,38 @@
           },
           "404": {
             "description": "User not found"
+          }
+        }
+      }
+    },
+    "/journal/entry/{journalEntryId}": {
+      "get": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Get details about a journal Entry.",
+        "description": "",
+        "operationId": "getEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "journalEntryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
+          },
+          "404": {
+            "description": "Entry not found"
           }
         }
       },
