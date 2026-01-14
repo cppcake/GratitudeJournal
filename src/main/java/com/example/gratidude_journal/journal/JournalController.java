@@ -1,6 +1,9 @@
 package com.example.gratidude_journal.journal;
 
+import java.util.Collection;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,5 +25,10 @@ public class JournalController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addEntry(@PathVariable String userName, @RequestBody JournalEntry newEntry) {
         journalService.addEntry(userName, newEntry);
+    }
+
+    @GetMapping("/journal/{userName}")
+    public Collection<IdDatePairDTO> getEntries(@PathVariable String userName) {
+        return journalService.getEntries(userName);
     }
 }

@@ -4,7 +4,7 @@ import com.example.gratidude_journal.user.User;
 
 import com.example.gratidude_journal.user.UserService;
 
-import java.time.LocalDate;
+import java.util.Collection;
 
 import org.springframework.stereotype.Service;
 
@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class JournalService {
+    private final JournalEntryRepository entryRepository;
     private final UserService userService;
 
-    public JournalService(UserService userService) {
+    public JournalService(JournalEntryRepository entryRepository, UserService userService) {
+        this.entryRepository = entryRepository;
         this.userService = userService;
     }
 
@@ -26,10 +28,9 @@ public class JournalService {
         userService.saveUser(userName);
     }
 
-    public JournalEntry getEntry(String userName, LocalDate date) {
+    public Collection<IdDatePairDTO> getEntries(String userName) {
         User user = userService.getUserByUserName(userName);
 
-        return user.getJournal().getJournalEntries().stream().filter(entry -> entry.getDate().equals(date)).findFirst()
-                .get();
+        return entryRepository.getEntriesByJournalId(user.getJournal().getJournalId());
     }
 }

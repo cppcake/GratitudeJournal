@@ -56,6 +56,10 @@ public class Journal {
         return journalEntries;
     }
 
+    public Long getJournalId() {
+        return journalId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
