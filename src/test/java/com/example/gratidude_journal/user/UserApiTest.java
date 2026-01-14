@@ -3,6 +3,7 @@ package com.example.gratidude_journal.user;
 import com.example.gratidude_journal.TestcontainersConfiguration;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -60,10 +61,10 @@ class UserApiTest {
 				.expectStatus().isCreated()
 				.expectBody(User.class)
 				.value(user -> {
-					org.junit.jupiter.api.Assertions.assertEquals(userName, user.getUserName());
-					org.junit.jupiter.api.Assertions.assertEquals(firstName, user.getFirstName());
-					org.junit.jupiter.api.Assertions.assertEquals(lastName, user.getLastName());
-					org.junit.jupiter.api.Assertions.assertNotNull(user.getUserId());
+					Assertions.assertEquals(userName, user.getUserName());
+					Assertions.assertEquals(firstName, user.getFirstName());
+					Assertions.assertEquals(lastName, user.getLastName());
+					Assertions.assertNotNull(user.getUserId());
 				});
 	}
 
@@ -79,10 +80,10 @@ class UserApiTest {
 				.expectStatus().isOk()
 				.expectBody(User.class)
 				.value(user -> {
-					org.junit.jupiter.api.Assertions.assertEquals(userName, user.getUserName());
-					org.junit.jupiter.api.Assertions.assertEquals(firstName, user.getFirstName());
-					org.junit.jupiter.api.Assertions.assertEquals(lastName, user.getLastName());
-					org.junit.jupiter.api.Assertions.assertNotNull(user.getUserId());
+					Assertions.assertEquals(userName, user.getUserName());
+					Assertions.assertEquals(firstName, user.getFirstName());
+					Assertions.assertEquals(lastName, user.getLastName());
+					Assertions.assertNotNull(user.getUserId());
 				});
 	}
 
