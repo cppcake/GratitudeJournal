@@ -24,11 +24,10 @@ class JournalApiTest {
 	@Autowired
 	private RestTestClient restTestClient;
 
-	// private final JournalService journalService;
+	//@Autowired
+	//private JournalService journalService;
 
-	public JournalApiTest() {// JournalService journalService) {
-		// this.journalService = journalService;
-	}
+	public JournalApiTest() {}
 
 	ResponseSpec requestAddEntry(String userName, JournalEntry.WellBeing wellBeing, String gratefullForToday,
 			String gratefullForTodayDescription, String gratefullForInLife, String gratefullForInLifeDescription) {
@@ -40,19 +39,22 @@ class JournalApiTest {
 				.exchange();
 	}
 
+	ResponseSpec requestGetEntries(String userName) {
+		return restTestClient.post()
+				.uri("http://localhost:%d/journal/%s".formatted(port, userName))
+				.exchange();
+	}
+
 	@Test
 	void addEntry() {
-		requestAddEntry("test1UserName", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+		requestAddEntry("test1UserNameJournal", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
 				"BBB")
 				.expectStatus().isCreated();
-
-		// journalService.getEntry("test1UserName",
-		// LocalDate.now()).getGratefullForToday().equals("Portal 2");
 	}
 
 	@Test
 	void addEntryThatDoesExist() {
-		requestAddEntry("test1UserName", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+		requestAddEntry("test1UserNameJournal", JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
 				"BBB")
 				.expectStatus().isForbidden();
 	}
