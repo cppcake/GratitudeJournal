@@ -184,6 +184,38 @@
             "description": "User not found"
           }
         }
+      }
+    },
+    "/journal/entry/{journalEntryId}": {
+      "get": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Get details about a journal Entry.",
+        "description": "",
+        "operationId": "getEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "journalEntryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/JournalEntry"
+            }
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        }
       },
       "post": {
         "tags": [
@@ -226,9 +258,7 @@
             "description": "User not found"
           }
         }
-      }
-    },
-    "/journal/{journalEntryId}": {
+      },
       "put": {
         "tags": [
           "journal"
@@ -289,36 +319,6 @@
         "responses": {
           "200": {
             "description": "Success"
-          },
-          "404": {
-            "description": "Entry not found"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "journal"
-        ],
-        "summary": "Get details about a journal Entry.",
-        "description": "",
-        "operationId": "getEntry",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "journalEntryId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "$ref": "#/definitions/JournalEntry"
-            }
           },
           "404": {
             "description": "Entry not found"

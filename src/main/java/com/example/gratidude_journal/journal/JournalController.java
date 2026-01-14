@@ -21,14 +21,14 @@ public class JournalController {
         this.journalService = journalService;
     }
 
-    @PostMapping("/journal/{userName}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addEntry(@PathVariable String userName, @RequestBody JournalEntry newEntry) {
-        journalService.addEntry(userName, newEntry);
-    }
-
     @GetMapping("/journal/{userName}")
     public Collection<IdDatePairDTO> getEntries(@PathVariable String userName) {
         return journalService.getEntries(userName);
+    }
+
+    @PostMapping("/journal/entry/{userName}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addEntry(@PathVariable String userName, @RequestBody JournalEntry newEntry) {
+        journalService.addEntry(userName, newEntry);
     }
 }
