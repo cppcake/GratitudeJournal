@@ -60,6 +60,13 @@ class JournalApiTest {
 				.exchange();
 	}
 
+	ResponseSpec requestPutEntry(Long journalEntryId, JournalEntryDTO updateEntryDTO) {
+		return restTestClient.put()
+				.uri("http://localhost:%d/journal/entry/%d".formatted(port, journalEntryId))
+				.body(updateEntryDTO)
+				.exchange();
+	}
+
 	@Test
 	void addEntry() {
 		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "Cake", "Cake is tasty.",
@@ -127,5 +134,35 @@ class JournalApiTest {
 	@Test
 	void getEntriesForInvalidUser() {
 		requestGetEntries("thisUserDoesNotExist").expectStatus().isNotFound();
+	}
+
+	@Test
+	void putEntry() {
+		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+				"BBB");
+
+		requestAddEntry("test3UserNameJournal", entryDTO).expectStatus().isCreated();
+
+		IdDatePairDTO[] entries = requestGetEntriesWithResult("test3UserNameJournal");
+		assertNotNull(entries);
+		assertEquals(entries.length, 1);
+		assertNotNull(entries[0].id());
+		assertEquals(entries[0].date(), LocalDate.now());
+
+		Long journalEntryId = entries[0].id();
+
+		requestGetEntry(entries[0].id()).expectStatus().isOk().expectBody(JournalEntry.class)
+				.value(entry -> {
+					assertTrue(JournalEntryDTO.compareToEntry(entryDTO, entry));
+				});
+
+		JournalEntryDTO updatedEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "C", "CCC", "DDD",
+				"DDD");
+		requestPutEntry(journalEntryId, updatedEntryDTO).expectStatus().isOk();
+
+		requestGetEntry(entries[0].id()).expectStatus().isOk().expectBody(JournalEntry.class)
+				.value(entry -> {
+					assertTrue(JournalEntryDTO.compareToEntry(updatedEntryDTO, entry));
+				});
 	}
 }

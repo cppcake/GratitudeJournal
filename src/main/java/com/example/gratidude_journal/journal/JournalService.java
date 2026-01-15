@@ -1,6 +1,7 @@
 package com.example.gratidude_journal.journal;
 
 import com.example.gratidude_journal.journal.entry.JournalEntry;
+import com.example.gratidude_journal.journal.entry.JournalEntryDTO;
 import com.example.gratidude_journal.journal.entry.IdDatePairDTO;
 import com.example.gratidude_journal.journal.entry.JournalEntryRepository;
 
@@ -8,6 +9,7 @@ import com.example.gratidude_journal.journal.exception.EntryNotFoundException;
 import com.example.gratidude_journal.user.User;
 
 import com.example.gratidude_journal.user.UserService;
+import com.example.gratidude_journal.user.exception.UserNotFoundException;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -47,5 +49,18 @@ public class JournalService {
             throw new EntryNotFoundException(journalEntryId);
 
         return entry.get();
+    }
+
+    public JournalEntry putEntry(Long journalEntryId, JournalEntryDTO updatedEntry) {
+        return entryRepository.findById(journalEntryId)
+                .map(foundEntry -> {
+                    foundEntry.setWellBeing(updatedEntry.wellBeing());
+                    foundEntry.setGratefullForToday(updatedEntry.gratefullForToday());
+                    foundEntry.setGratefullForTodayDescription(updatedEntry.gratefullForTodayDescription());
+                    foundEntry.setGratefullForInLife(updatedEntry.gratefullForInLife());
+                    foundEntry.setGratefullForInLifeDescription(updatedEntry.gratefullForInLifeDescription());
+                    return entryRepository.save(foundEntry);
+                })
+                .orElseThrow(() -> new EntryNotFoundException(journalEntryId));
     }
 }

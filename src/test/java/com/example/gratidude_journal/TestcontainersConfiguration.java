@@ -29,8 +29,12 @@ public class TestcontainersConfiguration {
 			log.info("Preloading " + repository.save(new User("test1UserName", "test1FirstName", "test1LastName")));
 			log.info("Preloading " + repository.save(new User("test2UserName", "test2FirstName", "test2LastName")));
 			log.info("Preloading " + repository.save(new User("test3UserName", "test3FirstName", "test3LastName")));
-			log.info("Preloading " + repository.save(new User("test1UserNameJournal", "test1FirstNameJournal", "test1LastNameJournal")));
-			log.info("Preloading " + repository.save(new User("test2UserNameJournal", "test2FirstNameJournal", "test2LastNameJournal")));
+			log.info("Preloading " + repository
+					.save(new User("test1UserNameJournal", "test1FirstNameJournal", "test1LastNameJournal")));
+			log.info("Preloading " + repository
+					.save(new User("test2UserNameJournal", "test2FirstNameJournal", "test2LastNameJournal")));
+			log.info("Preloading " + repository
+					.save(new User("test3UserNameJournal", "test3FirstNameJournal", "test3LastNameJournal")));
 		};
 	}
 }
