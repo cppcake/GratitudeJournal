@@ -9,7 +9,6 @@ import com.example.gratidude_journal.journal.exception.EntryNotFoundException;
 import com.example.gratidude_journal.user.User;
 
 import com.example.gratidude_journal.user.UserService;
-import com.example.gratidude_journal.user.exception.UserNotFoundException;
 
 import java.util.Collection;
 import java.util.Optional;
