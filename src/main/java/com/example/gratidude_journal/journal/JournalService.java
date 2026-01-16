@@ -62,4 +62,12 @@ public class JournalService {
                 })
                 .orElseThrow(() -> new EntryNotFoundException(journalEntryId));
     }
+
+    public void deleteEntry(Long journalEntryId) {
+        entryRepository.findById(journalEntryId)
+                .ifPresentOrElse(entry -> entryRepository.delete(entry),
+                        () -> {
+                            throw new EntryNotFoundException(journalEntryId);
+                        });
+    }
 }

@@ -67,6 +67,12 @@ class JournalApiTest {
 				.exchange();
 	}
 
+	ResponseSpec requestDeleteEntry(Long journalEntryId) {
+		return restTestClient.delete()
+				.uri("http://localhost:%d/journal/entry/%d".formatted(port, journalEntryId))
+				.exchange();
+	}
+
 	@Test
 	void addEntry() {
 		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "Cake", "Cake is tasty.",
@@ -76,7 +82,7 @@ class JournalApiTest {
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test1UserNameJournal");
 
 		assertNotNull(entries);
-		assertEquals(entries.length, 1);
+		assertEquals(1, entries.length);
 		assertNotNull(entries[0].id());
 		assertEquals(entries[0].date(), LocalDate.now());
 
@@ -106,7 +112,7 @@ class JournalApiTest {
 	void getEntries() {
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test2UserNameJournal");
 		assertNotNull(entries);
-		assertEquals(entries.length, 0);
+		assertEquals(0, entries.length);
 
 		JournalEntryDTO entryDTO_1 = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
 				"BBB");
@@ -115,9 +121,9 @@ class JournalApiTest {
 
 		entries = requestGetEntriesWithResult("test2UserNameJournal");
 		assertNotNull(entries);
-		assertEquals(entries.length, 1);
+		assertEquals(1, entries.length);
 		assertNotNull(entries[0].id());
-		assertEquals(entries[0].date(), LocalDate.now());
+		assertEquals(LocalDate.now(), entries[0].date());
 
 		requestGetEntry(entries[0].id()).expectStatus().isOk().expectBody(JournalEntry.class)
 				.value(entry -> {
@@ -128,7 +134,7 @@ class JournalApiTest {
 
 		entries = requestGetEntriesWithResult("test2UserNameJournal");
 		assertNotNull(entries);
-		assertEquals(entries.length, 1);
+		assertEquals(1, entries.length);
 	}
 
 	@Test
@@ -145,9 +151,9 @@ class JournalApiTest {
 
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test3UserNameJournal");
 		assertNotNull(entries);
-		assertEquals(entries.length, 1);
+		assertEquals(1, entries.length);
 		assertNotNull(entries[0].id());
-		assertEquals(entries[0].date(), LocalDate.now());
+		assertEquals(LocalDate.now(), entries[0].date());
 
 		Long journalEntryId = entries[0].id();
 
@@ -164,5 +170,42 @@ class JournalApiTest {
 				.value(entry -> {
 					assertTrue(JournalEntryDTO.compareToEntry(updatedEntryDTO, entry));
 				});
+	}
+
+	@Test
+	void putEntryForInvalidEntryId() {
+		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+				"BBB");
+		requestPutEntry(Long.MIN_VALUE, entryDTO).expectStatus().isNotFound();
+	}
+
+	@Test
+	void deleteEntry() {
+		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+				"BBB");
+
+		requestAddEntry("test4UserNameJournal", entryDTO).expectStatus().isCreated();
+
+		IdDatePairDTO[] entries = requestGetEntriesWithResult("test4UserNameJournal");
+		assertNotNull(entries);
+		assertEquals(1, entries.length);
+		assertNotNull(entries[0].id());
+
+		Long enryId = entries[0].id();
+
+		requestGetEntry(enryId).expectStatus().isOk();
+
+		requestDeleteEntry(enryId).expectStatus().isOk();
+
+		entries = requestGetEntriesWithResult("test4UserNameJournal");
+		assertNotNull(entries);
+		assertEquals(0, entries.length);
+
+		requestGetEntry(enryId).expectStatus().isNotFound();
+	}
+
+	@Test
+	void deleteEntryForInvalidEntryId() {
+		requestDeleteEntry(Long.MIN_VALUE).expectStatus().isNotFound();
 	}
 }
