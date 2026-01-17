@@ -108,7 +108,7 @@
             "description": "Updated user object",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/NewUser"
+              "$ref": "#/definitions/UpdateUser"
             }
           }
         ],
@@ -265,6 +265,33 @@
           }
         }
       },
+      "delete": {
+        "tags": [
+          "journal"
+        ],
+        "summary": "Delete a journal entry.",
+        "description": "",
+        "operationId": "deleteEntry",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "journalEntryId",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Entry removed successfully"
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        }
+      },
       "put": {
         "tags": [
           "journal"
@@ -298,33 +325,6 @@
             "schema": {
               "$ref": "#/definitions/JournalEntry"
             }
-          },
-          "404": {
-            "description": "Entry not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "journal"
-        ],
-        "summary": "Delete a journal entry.",
-        "description": "",
-        "operationId": "deleteEntry",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "journalEntryId",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Entry removed successfully"
           },
           "404": {
             "description": "Entry not found"
@@ -369,6 +369,21 @@
       },
       "required": [
         "userName",
+        "firstName",
+        "lastName"
+      ]
+    },
+    "UpdateUser": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      },
+      "required": [
         "firstName",
         "lastName"
       ]

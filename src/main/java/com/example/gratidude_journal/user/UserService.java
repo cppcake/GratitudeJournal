@@ -28,10 +28,10 @@ public class UserService {
         validateName(userUpdateDTO.lastName());
     }
 
-    private void validateName(User user) {
-        validateName(user.getUserName());
-        validateName(user.getFirstName());
-        validateName(user.getLastName());
+    private void validateName(UserDTO user) {
+        validateName(user.userName());
+        validateName(user.firstName());
+        validateName(user.lastName());
     }
 
     public User getUserByUserName(String userName) {
@@ -66,13 +66,14 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(userName));
     }
 
-    public User createUser(User newUser) {
-        validateName(newUser);
+    public User createUser(UserDTO userDTO) {
+        validateName(userDTO);
 
-        if (repository.findByUserName(newUser.getUserName()).isPresent())
-            throw new UserNameTakenException(newUser.getUserName());
+        if (repository.findByUserName(userDTO.userName()).isPresent())
+            throw new UserNameTakenException(userDTO.userName());
 
-        return repository.save(newUser);
+        User user = new User(userDTO.userName(), userDTO.firstName(), userDTO.lastName());
+        return repository.save(user);
     }
 
     public User saveUser(String userName) {

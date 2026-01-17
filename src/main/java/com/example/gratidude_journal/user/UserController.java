@@ -53,8 +53,8 @@ public class UserController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<User> createUser(@RequestBody User newUser) {
-        User user = userService.createUser(newUser);
+    public EntityModel<User> createUser(@RequestBody UserDTO userDTO) {
+        User user = userService.createUser(userDTO);
 
         return EntityModel.of(user,
                 linkTo(methodOn(UserController.class).createUser(null)).withSelfRel(),
