@@ -21,6 +21,44 @@
     }
   ],
   "paths": {
+    "/user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Creates a new user",
+        "description": "",
+        "operationId": "createUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created user object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Parameters malformed"
+          },
+          "403": {
+            "description": "A user with the same userName already exists"
+          }
+        }
+      }
+    },
     "/user/{userName}": {
       "get": {
         "tags": [
@@ -121,44 +159,6 @@
           },
           "404": {
             "description": "User does not exist"
-          }
-        }
-      }
-    },
-    "/user": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Creates a new user",
-        "description": "",
-        "operationId": "createUser",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Created user object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/NewUser"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "User created successfully"
-          },
-          "400": {
-            "description": "Parameters malformed"
-          },
-          "403": {
-            "description": "A user with the same userName already exists"
           }
         }
       }
