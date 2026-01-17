@@ -250,7 +250,7 @@
             "name": "journalEntryId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer"
           }
         ],
         "responses": {
@@ -395,16 +395,16 @@
           "type": "integer",
           "format": "int64"
         },
-        "gratefullForToday": {
+        "gratefulForToday": {
           "type": "string"
         },
-        "gratefullForTodayDescription": {
+        "gratefulForTodayDescription": {
           "type": "string"
         },
-        "gratefullForInLife": {
+        "gratefulForInLife": {
           "type": "string"
         },
-        "gratefullForInLifeDescription": {
+        "gratefulForInLifeDescription": {
           "type": "string"
         }
       },
