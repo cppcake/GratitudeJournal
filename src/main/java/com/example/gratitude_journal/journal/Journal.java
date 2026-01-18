@@ -42,14 +42,13 @@ public class Journal {
             throw new EntryAlreadyExistsException(newEntry.getDate());
 
         newEntry.setJournal(this);
-        System.out.println(newEntry.toString());
         journalEntries.add(newEntry);
     }
 
     public boolean hasEntryForToday() {
-        // This is inefficient but also super simple. Could be done in constant time in
-        // the future.
         LocalDate today = LocalDate.now();
+        // While this is inefficient, it is also simple and safe. It could however be
+        // done in constant time in the future.
         return journalEntries.stream().anyMatch(entry -> today.equals(entry.getDate()));
     }
 
