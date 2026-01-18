@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>gratidude_journal</artifactId>
+	<artifactId>gratitude_journal</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Gratidude Journal</name>
+	<name>Gratitude Journal</name>
 	<description>A web service to keep track of your well being and the things you are grateful for.</description>
 	<url/>
 	<licenses>
