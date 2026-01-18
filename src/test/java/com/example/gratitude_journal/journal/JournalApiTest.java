@@ -191,17 +191,17 @@ class JournalApiTest {
 		assertEquals(1, entries.length);
 		assertNotNull(entries[0].id());
 
-		Long enryId = entries[0].id();
+		Long entryId = entries[0].id();
 
-		requestGetEntry(enryId).expectStatus().isOk();
+		requestGetEntry(entryId).expectStatus().isOk();
 
-		requestDeleteEntry(enryId).expectStatus().isNoContent();
+		requestDeleteEntry(entryId).expectStatus().isNoContent();
 
 		entries = requestGetEntriesWithResult("test4UserNameJournal");
 		assertNotNull(entries);
 		assertEquals(0, entries.length);
 
-		requestGetEntry(enryId).expectStatus().isNotFound();
+		requestGetEntry(entryId).expectStatus().isNotFound();
 	}
 
 	@Test
