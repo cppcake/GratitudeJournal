@@ -4,9 +4,15 @@ import com.example.gratitude_journal.journal.entry.JournalEntry;
 import com.example.gratitude_journal.journal.entry.JournalEntryDTO;
 import com.example.gratitude_journal.journal.entry.JournalEntryModelAssembler;
 import com.example.gratitude_journal.journal.id_date_pair.IdDatePairDTO;
+import com.example.gratitude_journal.journal.id_date_pair.IdDatePairDTOModelAssembler;
 
-import java.util.Collection;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +34,22 @@ public class JournalController {
 
     private final JournalEntryModelAssembler journalEntryAssembler;
 
-    public JournalController(JournalService journalService, JournalEntryModelAssembler journalEntryAssembler) {
+    private final IdDatePairDTOModelAssembler idPairDTOAssembler;
+
+    public JournalController(JournalService journalService, JournalEntryModelAssembler journalEntryAssembler,
+            IdDatePairDTOModelAssembler idPairDTOAssembler) {
         this.journalService = journalService;
         this.journalEntryAssembler = journalEntryAssembler;
+        this.idPairDTOAssembler = idPairDTOAssembler;
     }
 
     @GetMapping("/journal/{userName}")
-    public Collection<IdDatePairDTO> getEntries(@PathVariable String userName) {
-        return journalService.getEntries(userName);
+    public CollectionModel<EntityModel<IdDatePairDTO>> getEntries(@PathVariable String userName) {
+        List<EntityModel<IdDatePairDTO>> entries = journalService.getEntries(userName).stream()
+                .map(idPairDTOAssembler::toModel).collect(Collectors.toList());
+
+        return CollectionModel.of(entries, linkTo(methodOn(JournalController.class).getEntries(userName)).withSelfRel(),
+                linkTo(methodOn(JournalController.class).addEntry(userName, null)).withRel("create"));
     }
 
     @PostMapping("/journal/{userName}")

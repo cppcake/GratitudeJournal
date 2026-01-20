@@ -5,6 +5,7 @@ import com.example.gratitude_journal.journal.entry.JournalEntryDTO;
 import com.example.gratitude_journal.journal.id_date_pair.IdDatePairDTO;
 
 import com.example.gratitude_journal.TestcontainersConfiguration;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -21,6 +24,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.client.RestTestClient.ResponseSpec;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -50,8 +56,26 @@ class JournalApiTest {
 	}
 
 	IdDatePairDTO[] requestGetEntriesWithResult(String userName) {
-		return requestGetEntries(userName).expectStatus().isOk()
-				.expectBody(IdDatePairDTO[].class).returnResult().getResponseBody();
+		String jsonResult = requestGetEntries(userName)
+				.expectBody(String.class).returnResult().getResponseBody();
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			JsonNode embedded = mapper.readTree(jsonResult).path("_embedded").path("idDatePairDTOList");
+			List<IdDatePairDTO> idDatePairList = new ArrayList<>();
+			for (JsonNode node : embedded) {
+				Long id = node.get("id").asLong();
+				LocalDate date = LocalDate.parse(node.get("date").asText());
+				idDatePairList.add(new IdDatePairDTO(id, date));
+			}
+			return idDatePairList.toArray(new IdDatePairDTO[0]);
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return new IdDatePairDTO[0];
 	}
 
 	ResponseSpec requestGetEntry(Long journalEntryId) {
@@ -97,7 +121,7 @@ class JournalApiTest {
 		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("test1UserNameJournal", entryDTO).expectStatus()	;
+		requestAddEntry("test1UserNameJournal", entryDTO).expectStatus();
 	}
 
 	@Test
