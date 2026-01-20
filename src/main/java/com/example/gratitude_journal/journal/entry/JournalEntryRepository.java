@@ -1,5 +1,7 @@
 package com.example.gratitude_journal.journal.entry;
 
+import com.example.gratitude_journal.journal.id_date_pair.IdDatePairDTO;
+
 import java.util.Collection;
 
 import org.springframework.data.jpa.repository.JpaRepository;

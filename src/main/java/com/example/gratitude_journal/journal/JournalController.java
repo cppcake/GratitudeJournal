@@ -3,7 +3,7 @@ package com.example.gratitude_journal.journal;
 import com.example.gratitude_journal.journal.entry.JournalEntry;
 import com.example.gratitude_journal.journal.entry.JournalEntryDTO;
 import com.example.gratitude_journal.journal.entry.JournalEntryModelAssembler;
-import com.example.gratitude_journal.journal.entry.IdDatePairDTO;
+import com.example.gratitude_journal.journal.id_date_pair.IdDatePairDTO;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package com.example.gratitude_journal.journal.entry;
+package com.example.gratitude_journal.journal.id_date_pair;
 
 import java.time.LocalDate;
 
