@@ -6,10 +6,10 @@ package com.example.gratitude_journal.user.dto;
  * clients receive. The journal of a user for example is not included in the
  * response, reducing the response size.
  * 
- * @param userId    the userId (primary key) of the user.
- * @param userName  the unique user name of the user.
+ * @param userId    The userId (primary key) of the user.
+ * @param userName  The unique user name of the user.
  * @param firstName The first name of the user.
- * @param lastName  the last name of the user.
+ * @param lastName  The last name of the user.
  * 
  * @author Afeef Neiroukh
  */

@@ -69,11 +69,12 @@ public class User {
     /**
      * Static method to validate if a given name is valid. A name is valid if it
      * fulfills the following conditions:
-     * - It is not null
-     * - Its length is 2 or greater
-     * - It contains no spaces
-     * 
-     * These rules are very relaxed and could be tightened in the future.
+     * <ul>
+     * <li>It is not null</li>
+     * <li>Its length is 2 or greater</li>
+     * <li>It contains no spaces</li>
+     * </ul>
+     * These rules are relaxed and could be tightened in the future by using regex.
      * 
      * @param name The name to validate.
      * @return Returns true if the name is valid and otherwise false.
@@ -93,8 +94,7 @@ public class User {
 
     /**
      * Convenient method to validate three names at once, typically to validate the
-     * userName,
-     * firstName and lastName of a user.
+     * user name, first name and last name of a user.
      * 
      * @param userName  The first name to validate, usually the user name of the
      *                  user.
@@ -116,11 +116,14 @@ public class User {
      * Constructs a user and assigns it a new Journal instance.
      * 
      * @param userName  The user name of the user to create. Is validated
-     * according to {@link User#validateName(String)} before applying it.
+     *                  according to {@link User#validateName(String)} before
+     *                  applying it.
      * @param firstName The first name of the user to create. Is validated
-     * according to {@link User#validateName(String)} before applying it.
-     * @param lastName  the last name of the user to create. Is validated
-     * according to {@link User#validateName(String)} before applying it.
+     *                  according to {@link User#validateName(String)} before
+     *                  applying it.
+     * @param lastName  The last name of the user to create. Is validated
+     *                  according to {@link User#validateName(String)} before
+     *                  applying it.
      * 
      * @throws NameInvalidException One or more of the names are invalid.
      */

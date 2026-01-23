@@ -6,16 +6,16 @@ package com.example.gratitude_journal.user.dto;
  * immutable User fields such as userId, userName and journal and at the same
  * time the response is easily deserializable.
  * 
- * @param firstName The first name of the user to create. Is validated
+ * @param firstName The new first name to apply on the user. Is validated
  *                  according to
  *                  {@link com.example.gratitude_journal.user.User#validateName(String)}.
- * @param lastName  the last name of the user to create. Is validated according
- *                  to
+ * @param lastName  The new last name to apply on the user. Is validated
+ *                  according to
  *                  {@link com.example.gratitude_journal.user.User#validateName(String)}.
  * 
  * @author Afeef Neiroukh
  */
 public record UpdateUserDTO(
-        String firstName,
-        String lastName) {
+                String firstName,
+                String lastName) {
 }

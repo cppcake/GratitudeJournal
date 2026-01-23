@@ -33,7 +33,7 @@ public class UserController {
 
     /**
      * ReturnUserDTOModelAssembler object injected by Spring. Used to add HAL links
-     * to reponses.
+     * to responses.
      */
     private final ReturnUserDTOModelAssembler returnUserDTOAssembler;
 
@@ -50,11 +50,11 @@ public class UserController {
     }
 
     /**
-     * Retrives a user.
+     * Retrieves a user.
      * 
      * @param userName The user name of the requested User object
      * @return An {@code EntityModel<ReturnUserDTO>} object containing the retrieved
-     *         User and links to valid actions.
+     *         User and links to valid actions (200 OK).
      */
     @GetMapping("/user/{userName}")
     public EntityModel<ReturnUserDTO> getUser(@PathVariable String userName) {
@@ -67,7 +67,7 @@ public class UserController {
      * Deletes a user
      * 
      * @param userName The user name of the User object to delete.
-     * @return Empty response.
+     * @return Empty response (204 No Content).
      */
     @DeleteMapping("/user/{userName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -83,7 +83,7 @@ public class UserController {
      * @param updateUserDTO The updateUserDTO object containing the updated mutable
      *                      variables.
      * @return An {@code EntityModel<ReturnUserDTO>} object containing the updated
-     *         User and links to valid actions.
+     *         User and links to valid actions (200 OK).
      */
     @PutMapping("/user/{userName}")
     public EntityModel<ReturnUserDTO> updateUser(@PathVariable String userName,
@@ -96,10 +96,10 @@ public class UserController {
     /**
      * Creates a new User object.
      * 
-     * @param newUserDTO The NewUserDTO object containing the variables to initilize
-     *                   the new user with.
+     * @param newUserDTO The NewUserDTO object containing the variables to
+     *                   initialize the new user with.
      * @return An {@code EntityModel<ReturnUserDTO>} object containing the created
-     *         User and links to valid actions.
+     *         User and links to valid actions (201 CREATED).
      */
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)

@@ -12,7 +12,7 @@ package com.example.gratitude_journal.user.dto;
  * @param firstName The first name of the user to create. Is validated
  *                  according to
  *                  {@link com.example.gratitude_journal.user.User#validateName(String)}.
- * @param lastName  the last name of the user to create. Is validated according
+ * @param lastName  The last name of the user to create. Is validated according
  *                  to
  *                  {@link com.example.gratitude_journal.user.User#validateName(String)}.
  * 
