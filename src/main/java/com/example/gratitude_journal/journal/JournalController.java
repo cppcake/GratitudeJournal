@@ -25,46 +25,87 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
-    Presentation Layer for Journal-API
-*/
+/**
+ * Rest-Controller exposing the Journal-API. Part of the presentation layer of
+ * the Journal-API.
+ */
 @RestController
 public class JournalController {
     private final JournalService journalService;
 
-    private final JournalEntryModelAssembler journalEntryAssembler;
+    private final JournalEntryModelAssembler journalEntryModelAssembler;
 
-    private final IdDatePairDTOModelAssembler idPairDTOAssembler;
+    private final IdDatePairDTOModelAssembler idPairDTOModelAssembler;
 
-    public JournalController(JournalService journalService, JournalEntryModelAssembler journalEntryAssembler,
-            IdDatePairDTOModelAssembler idPairDTOAssembler) {
+    /**
+     * Public constructor of the class.
+     * 
+     * @param journalService             JournalService object injected by Spring.
+     * @param journalEntryModelAssembler JournalEntryModelAssembler object injected
+     *                                   by Spring. Used to add HAL links to
+     *                                   responses.
+     * @param idPairDTOModelAssembler    IdPairDTOModelAssembler object injected by
+     *                                   Spring. Used to add HAL links to responses.
+     */
+    public JournalController(JournalService journalService, JournalEntryModelAssembler journalEntryModelAssembler,
+            IdDatePairDTOModelAssembler idPairDTOModelAssembler) {
         this.journalService = journalService;
-        this.journalEntryAssembler = journalEntryAssembler;
-        this.idPairDTOAssembler = idPairDTOAssembler;
+        this.journalEntryModelAssembler = journalEntryModelAssembler;
+        this.idPairDTOModelAssembler = idPairDTOModelAssembler;
     }
 
+    /**
+     * Retrieves a list containing an id-date pair for every journal entry belonging
+     * to the user.
+     * 
+     * @param userName The name of the user to retrieve the journal entries from.
+     * @return A {@code CollectionModel<EntityModel<IdDatePairDTO>>} object
+     *         containing a list of id-date pairs of the user's journal entries,
+     *         links to valid actions and HTTP-Code 200-OK.
+     */
     @GetMapping("/journal/{userName}")
     public CollectionModel<EntityModel<IdDatePairDTO>> getEntries(@PathVariable String userName) {
         List<EntityModel<IdDatePairDTO>> entries = journalService.getEntries(userName).stream()
-                .map(idPairDTOAssembler::toModel).collect(Collectors.toList());
+                .map(idPairDTOModelAssembler::toModel).collect(Collectors.toList());
 
         return CollectionModel.of(entries, linkTo(methodOn(JournalController.class).getEntries(userName)).withSelfRel(),
                 linkTo(methodOn(JournalController.class).addEntry(userName, null)).withRel("create"));
     }
 
+    /**
+     * Adds a journal entry to a user's journal.
+     * 
+     * @param userName The user name of the user to add the entry to.
+     * @param newEntry The new entry to add.
+     * @return An {@code EntityModel<JournalEntry>} object containing the added
+     *         entry, links to valid actions and HTTP-Code 201-CREATED.
+     */
     @PostMapping("/journal/{userName}")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<JournalEntry> addEntry(@PathVariable String userName, @RequestBody JournalEntry newEntry) {
         JournalEntry journalEntry = journalService.addEntry(userName, newEntry);
-        return journalEntryAssembler.toModel(journalEntry);
+        return journalEntryModelAssembler.toModel(journalEntry);
     }
 
+    /**
+     * Retrieves a journal entry.
+     * 
+     * @param journalEntryId The id of the requested journal entry.
+     * @return An {@code EntityModel<JournalEntry>} object containing the retrieved
+     *         entry, links to valid actions and HTTP-Code 200-OK.
+     */
     @GetMapping("/journal/entry/{journalEntryId}")
     public EntityModel<JournalEntry> getEntry(@PathVariable Long journalEntryId) {
         JournalEntry journalEntry = journalService.getEntry(journalEntryId);
-        return journalEntryAssembler.toModel(journalEntry);
+        return journalEntryModelAssembler.toModel(journalEntry);
     }
 
+    /**
+     * Deletes an entry.
+     * 
+     * @param journalEntryId The id of the journal entry to delete.
+     * @return Empty response and HTTP-Code 204-NO-CONTENT.
+     */
     @DeleteMapping("/journal/entry/{journalEntryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteEntry(@PathVariable Long journalEntryId) {
@@ -72,10 +113,23 @@ public class JournalController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Updates the mutable fields of a
+     * {@link com.example.gratitude_journal.journal.entry.JournalEntry} object.
+     * 
+     * @param journalEntryId The id of the
+     *                       {@link com.example.gratitude_journal.journal.entry.JournalEntry}
+     *                       object to update.
+     * @param updatedEntry   The
+     *                       {@link com.example.gratitude_journal.journal.entry.JournalEntryDTO}
+     *                       object containing the updated mutable variables.
+     * @return An {@code EntityModel<JournalEntry>} object containing the updated
+     *         entry, links to valid actions and HTTP-Code 200-OK.
+     */
     @PutMapping("/journal/entry/{journalEntryId}")
     public EntityModel<JournalEntry> updateEntry(@PathVariable Long journalEntryId,
             @RequestBody JournalEntryDTO updatedEntry) {
-        JournalEntry journalEntry = journalService.putEntry(journalEntryId, updatedEntry);
-        return journalEntryAssembler.toModel(journalEntry);
+        JournalEntry journalEntry = journalService.updateEntry(journalEntryId, updatedEntry);
+        return journalEntryModelAssembler.toModel(journalEntry);
     }
 }
