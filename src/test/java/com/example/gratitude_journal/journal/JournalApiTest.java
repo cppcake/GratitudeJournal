@@ -28,33 +28,61 @@ import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingExcept
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Unit-Tests for the endpoints in {@link com.example.gratitude_journal.journal.JournalController}, testing the presentation layer of the Journal-API.
+ * 
+ * @author Afeef Neiroukh
+ */
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureRestTestClient
 class JournalApiTest {
-
+	/**
+	 * Port of the testing service.
+	 */
 	@LocalServerPort
 	private int port;
 
+	/**
+	 * HTTP-Client to interact with the presentation layer.
+	 */
 	@Autowired
 	private RestTestClient restTestClient;
 
-	public JournalApiTest() {
-	}
-
-	ResponseSpec requestAddEntry(String userName, JournalEntryDTO entryDTO) {
+	/**
+	 * Helper method to perform a POST-Request to add a new entry to a user's
+	 * journal.
+	 * 
+	 * @param userName The user name of the user to add the entry to.
+	 * @param journalEntryDTO JournalEntryDTO object describing the fields of the new entry.
+	 * @return {@link ResponseSpec} of the request.
+	 */
+	ResponseSpec requestAddEntry(String userName, JournalEntryDTO journalEntryDTO) {
 		return restTestClient.post()
 				.uri("http://localhost:%d/journal/%s".formatted(port, userName))
-				.body(entryDTO)
+				.body(journalEntryDTO)
 				.exchange();
 	}
 
+	/**
+	 * Helper method to perform a GET-Request for a user's journal.
+	 * 
+	 * @param userName The user name of the user to retrieve the journal from.
+	 * @return {@link ResponseSpec} of the request.
+	 */
 	ResponseSpec requestGetEntries(String userName) {
 		return restTestClient.get()
 				.uri("http://localhost:%d/journal/%s".formatted(port, userName))
 				.exchange();
 	}
 
+	/**
+	 * Helper method to perform a GET-Request for a user's journal and return the
+	 * results.
+	 * 
+	 * @param userName The user name of the user to retrieve the journal from.
+	 * @return Array containing an IdDatePairDTO for every entry in the journal.
+	 */
 	IdDatePairDTO[] requestGetEntriesWithResult(String userName) {
 		String jsonResult = requestGetEntries(userName)
 				.expectBody(String.class).returnResult().getResponseBody();
@@ -78,30 +106,52 @@ class JournalApiTest {
 		return new IdDatePairDTO[0];
 	}
 
+	/**
+	 * Helper method to perform a GET-Request on a specific journal entry.
+	 * 
+	 * @param journalEntryId The id of the journal entry to retrieve.
+	 * @return {@link ResponseSpec} of the request.
+	 */
 	ResponseSpec requestGetEntry(Long journalEntryId) {
 		return restTestClient.get()
 				.uri("http://localhost:%d/journal/entry/%d".formatted(port, journalEntryId))
 				.exchange();
 	}
 
-	ResponseSpec requestPutEntry(Long journalEntryId, JournalEntryDTO updateEntryDTO) {
+	/**
+	 * Helper method to perform a PUT-Request on a specific journal entry.
+	 * 
+	 * @param journalEntryId The id of the journal entry to update.
+	 * @param journalEntryDTO JournalEntryDTO object containing the necessary fields to update the journal entry.
+	 * @return {@link ResponseSpec} of the request.
+	 */
+	ResponseSpec requestPutEntry(Long journalEntryId, JournalEntryDTO journalEntryDTO) {
 		return restTestClient.put()
 				.uri("http://localhost:%d/journal/entry/%d".formatted(port, journalEntryId))
-				.body(updateEntryDTO)
+				.body(journalEntryDTO)
 				.exchange();
 	}
 
+	/**
+	 * Helper method to perform a DELETE-Request on a specific journal entry.
+	 * 
+	 * @param journalEntryId The id of the journal entry to delete.
+	 * @return {@link ResponseSpec} of the request.
+	 */
 	ResponseSpec requestDeleteEntry(Long journalEntryId) {
 		return restTestClient.delete()
 				.uri("http://localhost:%d/journal/entry/%d".formatted(port, journalEntryId))
 				.exchange();
 	}
 
+	/**
+	 * Unit-Test for POST-Request adding a new entry to a user's journal.
+	 */
 	@Test
 	void addEntry() {
-		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "Cake", "Cake is tasty.",
+		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "Cake", "Cake is tasty.",
 				"Computers", "They empower me to do awesome things.");
-		requestAddEntry("test1UserNameJournal", entryDTO).expectStatus().isCreated();
+		requestAddEntry("test1UserNameJournal", journalEntryDTO).expectStatus().isCreated();
 
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test1UserNameJournal");
 
@@ -112,36 +162,45 @@ class JournalApiTest {
 
 		requestGetEntry(entries[0].id()).expectStatus().isOk().expectBody(JournalEntry.class)
 				.value(entry -> {
-					assertTrue(JournalEntryDTO.compareToEntry(entryDTO, entry));
+					assertTrue(JournalEntryDTO.compareToEntry(journalEntryDTO, entry));
 				});
 	}
 
+	/**
+	 * Unit-Test for POST-Request adding a new entry when one already exists for today.
+	 */
 	@Test
-	void addEntryThatDoesExist() {
-		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+	void addEntryConflictingDate() {
+		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("test1UserNameJournal", entryDTO).expectStatus();
+		requestAddEntry("test1UserNameJournal", journalEntryDTO).expectStatus();
 	}
 
+	/**
+	 * Unit-Test for POST-Request adding a new entry for a non-existing user.
+	 */
 	@Test
-	void addEntryForInvalidUser() {
-		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
+	void addEntryForMissingUser() {
+		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("thisUserDoesNotExist", entryDTO).expectStatus().isNotFound();
+		requestAddEntry("thisUserDoesNotExist", journalEntryDTO).expectStatus().isNotFound();
 	}
 
+	/**
+	 * Unit-Test for GET-Request on a user's journal.
+	 */
 	@Test
 	void getEntries() {
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test2UserNameJournal");
 		assertNotNull(entries);
 		assertEquals(0, entries.length);
 
-		JournalEntryDTO entryDTO_1 = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+		JournalEntryDTO journalEntryDTO_1 = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("test2UserNameJournal", entryDTO_1).expectStatus().isCreated();
+		requestAddEntry("test2UserNameJournal", journalEntryDTO_1).expectStatus().isCreated();
 
 		entries = requestGetEntriesWithResult("test2UserNameJournal");
 		assertNotNull(entries);
@@ -151,27 +210,33 @@ class JournalApiTest {
 
 		requestGetEntry(entries[0].id()).expectStatus().isOk().expectBody(JournalEntry.class)
 				.value(entry -> {
-					assertTrue(JournalEntryDTO.compareToEntry(entryDTO_1, entry));
+					assertTrue(JournalEntryDTO.compareToEntry(journalEntryDTO_1, entry));
 				});
 
-		requestAddEntry("test2UserNameJournal", entryDTO_1).expectStatus().isEqualTo(409);
+		requestAddEntry("test2UserNameJournal", journalEntryDTO_1).expectStatus().isEqualTo(409);
 
 		entries = requestGetEntriesWithResult("test2UserNameJournal");
 		assertNotNull(entries);
 		assertEquals(1, entries.length);
 	}
 
+	/**
+	 * Unit-Test for GET-Request on the journal of a non-existing user.
+	 */
 	@Test
-	void getEntriesForInvalidUser() {
+	void getEntriesForMissingUser() {
 		requestGetEntries("thisUserDoesNotExist").expectStatus().isNotFound();
 	}
 
+	/**
+	 * Unit-Test for PUT-Request on a journal entry.
+	 */
 	@Test
 	void putEntry() {
-		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("test3UserNameJournal", entryDTO).expectStatus().isCreated();
+		requestAddEntry("test3UserNameJournal", journalEntryDTO).expectStatus().isCreated();
 
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test3UserNameJournal");
 		assertNotNull(entries);
@@ -183,7 +248,7 @@ class JournalApiTest {
 
 		requestGetEntry(entries[0].id()).expectStatus().isOk().expectBody(JournalEntry.class)
 				.value(entry -> {
-					assertTrue(JournalEntryDTO.compareToEntry(entryDTO, entry));
+					assertTrue(JournalEntryDTO.compareToEntry(journalEntryDTO, entry));
 				});
 
 		JournalEntryDTO updatedEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "C", "CCC", "DDD",
@@ -196,38 +261,47 @@ class JournalApiTest {
 				});
 	}
 
+	/**
+	 * Unit-Test for PUT-Request on a non-existing journal entry.
+	 */
 	@Test
 	void putEntryForInvalidEntryId() {
-		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
 				"BBB");
-		requestPutEntry(Long.MIN_VALUE, entryDTO).expectStatus().isNotFound();
+		requestPutEntry(Long.MIN_VALUE, journalEntryDTO).expectStatus().isNotFound();
 	}
 
+	/**
+	 * Unit-Test for DELETE-Request on a journal entry.
+	 */
 	@Test
 	void deleteEntry() {
-		JournalEntryDTO entryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
+		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.FANTASTIC, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("test4UserNameJournal", entryDTO).expectStatus().isCreated();
+		requestAddEntry("test4UserNameJournal", journalEntryDTO).expectStatus().isCreated();
 
 		IdDatePairDTO[] entries = requestGetEntriesWithResult("test4UserNameJournal");
 		assertNotNull(entries);
 		assertEquals(1, entries.length);
 		assertNotNull(entries[0].id());
 
-		Long enryId = entries[0].id();
+		Long entryId = entries[0].id();
 
-		requestGetEntry(enryId).expectStatus().isOk();
+		requestGetEntry(entryId).expectStatus().isOk();
 
-		requestDeleteEntry(enryId).expectStatus().isNoContent();
+		requestDeleteEntry(entryId).expectStatus().isNoContent();
 
 		entries = requestGetEntriesWithResult("test4UserNameJournal");
 		assertNotNull(entries);
 		assertEquals(0, entries.length);
 
-		requestGetEntry(enryId).expectStatus().isNotFound();
+		requestGetEntry(entryId).expectStatus().isNotFound();
 	}
 
+	/**
+	 * Unit-Test for DELETE-Request on a non-existing journal entry.
+	 */
 	@Test
 	void deleteEntryForInvalidEntryId() {
 		requestDeleteEntry(Long.MIN_VALUE).expectStatus().isNotFound();
