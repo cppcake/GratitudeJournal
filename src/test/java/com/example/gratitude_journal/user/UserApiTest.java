@@ -1,7 +1,6 @@
 package com.example.gratitude_journal.user;
 
-import com.example.gratitude_journal.user.dto.NewUserDTO;
-import com.example.gratitude_journal.user.dto.UpdateUserDTO;
+import com.example.gratitude_journal.user.dto.SimpleUserDTO;
 import com.example.gratitude_journal.user.dto.ReturnUserDTO;
 import com.example.gratitude_journal.TestcontainersConfiguration;
 
@@ -96,9 +95,9 @@ class UserApiTest {
 	 * @return {@link ResponseSpec} of the request.
 	 */
 	ResponseSpec requestPutUser(String userName, String firstName, String lastName) {
-		UpdateUserDTO updateNewUserDTO = new UpdateUserDTO(firstName, lastName);
+		SimpleUserDTO simpleUserDTO = new SimpleUserDTO(firstName, lastName);
 		return restTestClient.put().uri("http://localhost:%d/user/%s".formatted(port, userName))
-				.body(updateNewUserDTO)
+				.body(simpleUserDTO)
 				.exchange();
 	}
 
@@ -131,9 +130,9 @@ class UserApiTest {
 	 * @return {@link ResponseSpec} of the request.
 	 */
 	ResponseSpec requestPostUser(String userName, String firstName, String lastName) {
-		NewUserDTO newUserDTO = new NewUserDTO(userName, firstName, lastName);
-		return restTestClient.post().uri("/user")
-				.body(newUserDTO)
+		SimpleUserDTO simpleUserDTO = new SimpleUserDTO(firstName, lastName);
+		return restTestClient.post().uri("http://localhost:%d/user/%s".formatted(port, userName))
+				.body(simpleUserDTO)
 				.exchange();
 	}
 
@@ -244,9 +243,9 @@ class UserApiTest {
 	void updateUserWithInvalidName() {
 		requestPutUser("I", "firstName", "lastName")
 				.expectStatus().isBadRequest();
-		requestPutUser("test2UserName", "", "lastName")
+		requestPutUser("test2UserName", "I", "lastName")
 				.expectStatus().isBadRequest();
-		requestPutUser("test2UserName", "firstName", "")
+		requestPutUser("test2UserName", "firstName", "I")
 				.expectStatus().isBadRequest();
 	}
 
@@ -255,12 +254,14 @@ class UserApiTest {
 	 */
 	@Test
 	void createUserThatDoesNotExist() {
-		requestGetUser("newUserDTOTestuserName")
+		requestGetUser("simpleUserDTOTestuserName")
 				.expectStatus().isNotFound();
 
-		requestAndValidatePostUser("newUserDTOTestuserName", "newUserDTOTestfirstName", "newUserDTOTestlastName");
+		requestAndValidatePostUser("simpleUserDTOTestuserName", "simpleUserDTOTestfirstName",
+				"simpleUserDTOTestlastName");
 
-		requestAndValidateGetUser("newUserDTOTestuserName", "newUserDTOTestfirstName", "newUserDTOTestlastName");
+		requestAndValidateGetUser("simpleUserDTOTestuserName", "simpleUserDTOTestfirstName",
+				"simpleUserDTOTestlastName");
 	}
 
 	/**
@@ -278,11 +279,11 @@ class UserApiTest {
 	 */
 	@Test
 	void createUserWithInvalidName() {
-		requestPostUser("", "firstName", "lastName")
+		requestPostUser("I", "firstName", "lastName")
 				.expectStatus().isBadRequest();
-		requestPostUser("userName", "", "lastName")
+		requestPostUser("userName", "I", "lastName")
 				.expectStatus().isBadRequest();
-		requestPostUser("userName", "firstName", "")
+		requestPostUser("userName", "firstName", "I")
 				.expectStatus().isBadRequest();
 	}
 }

@@ -28,9 +28,10 @@ import com.example.gratitude_journal.journal.Journal;
  * userName are immutable, the firstName and lastName are mutable and the state
  * of journal is mutable (but the reference is immutable).
  * 
- * The DTOs NewUserDTO, ReturnUserDTO and UpdateUserDTO represent parts of the
- * User. These are used in the User-API to avoid exposing or demanding
- * irrelevant fields and improve the separation of concerns.
+ * The DTOs {@link com.example.gratitude_journal.user.dto.SimpleUserDTO} and
+ * {@link ReturnUserDTO} represent parts of the User. These are used in the
+ * User-API to avoid exposing or demanding irrelevant fields and improve the
+ * separation of concerns.
  * 
  * @author Afeef Neiroukh
  */

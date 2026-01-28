@@ -21,46 +21,6 @@
     }
   ],
   "paths": {
-    "/user": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Creates a new user",
-        "operationId": "createUser",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "NewUser object to create a new User based on its values.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/NewUser"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Returns the successfully created User without its journal.",
-            "schema": {
-              "$ref": "#/definitions/ReturnUser"
-            }
-          },
-          "400": {
-            "description": "Parameters malformed"
-          },
-          "409": {
-            "description": "A user with the same userName already exists"
-          }
-        }
-      }
-    },
     "/user/{userName}": {
       "get": {
         "tags": [
@@ -92,6 +52,50 @@
           },
           "404": {
             "description": "User not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Creates a new user",
+        "operationId": "createUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "SimpleUser object to create a new User based on its values.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SimpleUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns the successfully created User without its journal.",
+            "schema": {
+              "$ref": "#/definitions/ReturnUser"
+            }
+          },
+          "400": {
+            "description": "Parameters malformed"
+          },
+          "409": {
+            "description": "A user with the same userName already exists"
           }
         }
       },
@@ -144,9 +148,9 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "description": "UpdateUser object to override values of the given User object.",
+            "description": "SimpleUser object to override values of the given User object.",
             "schema": {
-              "$ref": "#/definitions/UpdateUser"
+              "$ref": "#/definitions/SimpleUser"
             }
           }
         ],
@@ -363,26 +367,7 @@
         }
       }
     },
-    "NewUser": {
-      "type": "object",
-      "properties": {
-        "userName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "userName",
-        "firstName",
-        "lastName"
-      ]
-    },
-    "UpdateUser": {
+    "SimpleUser": {
       "type": "object",
       "properties": {
         "firstName": {

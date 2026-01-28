@@ -1,7 +1,6 @@
 package com.example.gratitude_journal.user;
 
-import com.example.gratitude_journal.user.dto.NewUserDTO;
-import com.example.gratitude_journal.user.dto.UpdateUserDTO;
+import com.example.gratitude_journal.user.dto.SimpleUserDTO;
 
 import org.springframework.stereotype.Service;
 
@@ -43,31 +42,17 @@ public class UserService {
 
     /**
      * Convenient method to validate a name and the fields firstName and lastName of
-     * a userUpdateDTO object against the
+     * a simpleUserDTO object against the
      * {@link com.example.gratitude_journal.user.User#validateName(String)} method.
      * 
      * @param userName      The user name to validate.
-     * @param userUpdateDTO The UserUpdateDTO object to validate its name fields.
+     * @param simpleUserDTO The SimpleUserDTO object to validate its name fields.
      * @throws NameInvalidException At least one of the provided names are invalid.
      */
-    private void validateName(String userName, UpdateUserDTO userUpdateDTO) {
+    private void validateName(String userName, SimpleUserDTO simpleUserDTO) {
         validateName(userName);
-        validateName(userUpdateDTO.firstName());
-        validateName(userUpdateDTO.lastName());
-    }
-
-    /**
-     * Convenient method to validate the name fields (userName, firstName and
-     * lastName) of a NewUserDTO object against the
-     * {@link com.example.gratitude_journal.user.User#validateName(String)} method.
-     * 
-     * @param newUser The NewUserDTO object to validate its name fields.
-     * @throws NameInvalidException At least one of the provided names are invalid.
-     */
-    private void validateName(NewUserDTO newUser) {
-        validateName(newUser.userName());
-        validateName(newUser.firstName());
-        validateName(newUser.lastName());
+        validateName(simpleUserDTO.firstName());
+        validateName(simpleUserDTO.lastName());
     }
 
     /**
@@ -109,10 +94,10 @@ public class UserService {
     }
 
     /**
-     * Update a user. The updated fields must be passed as an updateUserDTO object.
+     * Update a user. The updated fields must be passed as an simpleUserDTO object.
      * 
      * @param userName      The unique user name of the user to update.
-     * @param updateUserDTO The UpdateUserDTO object including the mutable fields to
+     * @param simpleUserDTO The SimpleUserDTO object including the mutable fields to
      *                      apply.
      * @return The updated User object.
      * 
@@ -120,13 +105,13 @@ public class UserService {
      * @throws UserNotFoundException No user with the provided userName could be
      *                               found.
      */
-    public User updateUser(String userName, UpdateUserDTO updateUserDTO) {
-        validateName(userName, updateUserDTO);
+    public User updateUser(String userName, SimpleUserDTO simpleUserDTO) {
+        validateName(userName, simpleUserDTO);
 
         return repository.findByUserName(userName)
                 .map(foundUser -> {
-                    foundUser.setFirstName(updateUserDTO.firstName());
-                    foundUser.setLastName(updateUserDTO.lastName());
+                    foundUser.setFirstName(simpleUserDTO.firstName());
+                    foundUser.setLastName(simpleUserDTO.lastName());
                     return repository.save(foundUser);
                 })
                 .orElseThrow(() -> new UserNotFoundException(userName));
@@ -134,23 +119,24 @@ public class UserService {
 
     /**
      * Create a new user. The fields to initialize the user with must be passed as a
-     * NewUserDTO object.
+     * SimpleUserDTO object.
      * 
-     * @param newUserDTO NewUserDTO object containing the required fields to
-     *                   initialize the created user with.
+     * @param userName      User name of the User to create. Must be unique.
+     * @param simpleUserDTO SimpleUserDTO object containing the required fields to
+     *                      initialize the created user with.
      * @return The created User object.
      * @throws NameInvalidException   At least one of the provided names are
      *                                invalid.
      * @throws UserNameTakenException A User object matching the provided user name
      *                                already exists.
      */
-    public User createUser(NewUserDTO newUserDTO) {
-        validateName(newUserDTO);
+    public User createUser(String userName, SimpleUserDTO simpleUserDTO) {
+        validateName(userName, simpleUserDTO);
 
-        if (repository.findByUserName(newUserDTO.userName()).isPresent())
-            throw new UserNameTakenException(newUserDTO.userName());
+        if (repository.findByUserName(userName).isPresent())
+            throw new UserNameTakenException(userName);
 
-        User user = new User(newUserDTO.userName(), newUserDTO.firstName(), newUserDTO.lastName());
+        User user = new User(userName, simpleUserDTO.firstName(), simpleUserDTO.lastName());
         return repository.save(user);
     }
 

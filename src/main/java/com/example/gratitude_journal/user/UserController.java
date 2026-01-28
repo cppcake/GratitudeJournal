@@ -1,7 +1,6 @@
 package com.example.gratitude_journal.user;
 
-import com.example.gratitude_journal.user.dto.NewUserDTO;
-import com.example.gratitude_journal.user.dto.UpdateUserDTO;
+import com.example.gratitude_journal.user.dto.SimpleUserDTO;
 import com.example.gratitude_journal.user.dto.ReturnUserDTO;
 import com.example.gratitude_journal.user.dto.ReturnUserDTOModelAssembler;
 
@@ -80,15 +79,15 @@ public class UserController {
      * Updates the mutable fields of a User object.
      * 
      * @param userName      The user name of the User object to update.
-     * @param updateUserDTO The updateUserDTO object containing the updated mutable
+     * @param simpleUserDTO The SimpleUserDTO object containing the updated mutable
      *                      variables.
      * @return An {@code EntityModel<ReturnUserDTO>} object containing the updated
      *         User and links to valid actions (200 OK).
      */
     @PutMapping("/user/{userName}")
     public EntityModel<ReturnUserDTO> updateUser(@PathVariable String userName,
-            @RequestBody UpdateUserDTO updateUserDTO) {
-        User user = userService.updateUser(userName, updateUserDTO);
+            @RequestBody SimpleUserDTO simpleUserDTO) {
+        User user = userService.updateUser(userName, simpleUserDTO);
 
         return returnUserDTOAssembler.toModel(user.toReturnUserDTO());
     }
@@ -96,15 +95,16 @@ public class UserController {
     /**
      * Creates a new User object.
      * 
-     * @param newUserDTO The NewUserDTO object containing the variables to
-     *                   initialize the new user with.
+     * @param simpleUserDTO The SimpleUserDTO object containing the variables to
+     *                      initialize the new user with.
      * @return An {@code EntityModel<ReturnUserDTO>} object containing the created
      *         User and links to valid actions (201 CREATED).
      */
-    @PostMapping("/user")
+    @PostMapping("/user/{userName}")
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<ReturnUserDTO> createUser(@RequestBody NewUserDTO newUserDTO) {
-        User user = userService.createUser(newUserDTO);
+    public EntityModel<ReturnUserDTO> createUser(@PathVariable String userName,
+            @RequestBody SimpleUserDTO simpleUserDTO) {
+        User user = userService.createUser(userName, simpleUserDTO);
 
         return returnUserDTOAssembler.toModel(user.toReturnUserDTO());
     }
