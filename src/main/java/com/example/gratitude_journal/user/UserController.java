@@ -63,6 +63,24 @@ public class UserController {
     }
 
     /**
+     * Creates a new User object.
+     * 
+     * @param userName      The user name of the User object to create.
+     * @param simpleUserDTO The SimpleUserDTO object containing the variables to
+     *                      initialize the new user with.
+     * @return An {@code EntityModel<ReturnUserDTO>} object containing the created
+     *         User and links to valid actions (201 CREATED).
+     */
+    @PostMapping("/user/{userName}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EntityModel<ReturnUserDTO> createUser(@PathVariable String userName,
+            @RequestBody SimpleUserDTO simpleUserDTO) {
+        User user = userService.createUser(userName, simpleUserDTO);
+
+        return returnUserDTOAssembler.toModel(user.toReturnUserDTO());
+    }
+
+    /**
      * Deletes a user
      * 
      * @param userName The user name of the User object to delete.
@@ -88,23 +106,6 @@ public class UserController {
     public EntityModel<ReturnUserDTO> updateUser(@PathVariable String userName,
             @RequestBody SimpleUserDTO simpleUserDTO) {
         User user = userService.updateUser(userName, simpleUserDTO);
-
-        return returnUserDTOAssembler.toModel(user.toReturnUserDTO());
-    }
-
-    /**
-     * Creates a new User object.
-     * 
-     * @param simpleUserDTO The SimpleUserDTO object containing the variables to
-     *                      initialize the new user with.
-     * @return An {@code EntityModel<ReturnUserDTO>} object containing the created
-     *         User and links to valid actions (201 CREATED).
-     */
-    @PostMapping("/user/{userName}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<ReturnUserDTO> createUser(@PathVariable String userName,
-            @RequestBody SimpleUserDTO simpleUserDTO) {
-        User user = userService.createUser(userName, simpleUserDTO);
 
         return returnUserDTOAssembler.toModel(user.toReturnUserDTO());
     }
