@@ -24,6 +24,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.test.web.servlet.client.RestTestClient.ResponseSpec;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException;
@@ -181,7 +182,7 @@ class JournalApiTest {
 		JournalEntryDTO journalEntryDTO = new JournalEntryDTO(JournalEntry.WellBeing.GOOD, "A", "AAA", "B",
 				"BBB");
 
-		requestAddEntry("test1UserNameJournal", journalEntryDTO).expectStatus();
+		requestAddEntry("test1UserNameJournal", journalEntryDTO).expectStatus().isEqualTo(HttpStatusCode.valueOf(409));
 	}
 
 	/**
