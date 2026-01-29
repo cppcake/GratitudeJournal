@@ -97,10 +97,7 @@ public class JournalService {
     public JournalEntry getEntry(Long journalEntryId) {
         Optional<JournalEntry> entry = entryRepository.findById(journalEntryId);
 
-        if (!entry.isPresent())
-            throw new EntryNotFoundException(journalEntryId);
-
-        return entry.get();
+        return entry.orElseThrow(() -> new EntryNotFoundException(journalEntryId));
     }
 
     /**
