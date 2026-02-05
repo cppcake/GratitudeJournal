@@ -1,0 +1,50 @@
+name: Build and deploy javadoc page to GitHub Pages
+
+# Rebuild site for every new commit on main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Build the javadoc site and upload it as an artifact
+  build:
+    permissions:
+      contents: read
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: "25"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Build javadoc page
+        run: mvn site
+
+      - name: Upload javadoc page
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: target/site/apidocs
+
+  # Upload the artifact (javadoc page) from the build process to GitHub Pages
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy artifact (javadoc page)
+        id: deployment
+        uses: actions/deploy-pages@v4
